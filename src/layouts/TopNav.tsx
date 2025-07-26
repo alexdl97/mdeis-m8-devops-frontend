@@ -1,7 +1,8 @@
-import { Box, Stack, IconButton, Tooltip, Badge, Avatar } from "@mui/material";
-import { ListIcon, MagnifyingGlassIcon, UsersIcon, BellIcon } from "@phosphor-icons/react";
 import React from "react";
+import { Box, Stack, IconButton, Tooltip, Avatar } from "@mui/material";
+import { ListIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { Fragment } from "react/jsx-runtime";
+import { MobileNav } from "./MobileNav";
 
 export function TopNav(): React.JSX.Element {
     const [openNav, setOpenNav] = React.useState<boolean>(false);
@@ -39,33 +40,19 @@ export function TopNav(): React.JSX.Element {
                         </Tooltip>
                     </Stack>
                     <Stack sx={{ alignItems: 'center' }} direction="row" spacing={2}>
-                        {/* <Tooltip title="Contacts">
-                            <IconButton>
-                                <UsersIcon />
-                            </IconButton>
-                        </Tooltip> */}
-                        {/* <Tooltip title="Notifications">
-                            <Badge badgeContent={4} color="success" variant="dot">
-                                <IconButton>
-                                    <BellIcon />
-                                </IconButton>
-                            </Badge>
-                        </Tooltip> */}
                         <Avatar
-                            //   onClick={userPopover.handleOpen}
-                            //   ref={userPopover.anchorRef}
                             src="/assets/avatar.png"
                             sx={{ cursor: 'pointer' }}
                         />
                     </Stack>
                 </Stack>
             </Box>
-            {/* <MobileNav
+            <MobileNav
                 onClose={() => {
                     setOpenNav(false);
                 }}
                 open={openNav}
-            /> */}
+            />
         </Fragment>
     );
 }

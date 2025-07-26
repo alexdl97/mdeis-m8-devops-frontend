@@ -2,9 +2,9 @@ import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from "@
 import { ClientForm } from "../components/ClientForm";
 import { useState } from "react";
 import { PlusIcon } from "@phosphor-icons/react";
-import { ClientTable } from "../components/ClientTable";
+import { InvoiceTable } from "../components/InvoiceTable";
 
-export function ClientPage() {
+export function InvoicePage() {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -19,17 +19,17 @@ export function ClientPage() {
     <Stack spacing={3}>
       <Stack direction="row" spacing={3}>
         <Stack spacing={1} sx={{ flex: '1 1 auto' }}>
-          <Typography variant="h4">Clients</Typography>
+          <Typography variant="h4">Invoices</Typography>
         </Stack>
         <div>
           <Button startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained" onClick={handleClickOpen}>
-            Add client
+            Add invoice
           </Button>
         </div>
       </Stack>
-      <ClientTable rowsPerPage={5} />
+      <InvoiceTable rowsPerPage={5} />
       <Dialog open={open}>
-        <DialogTitle>Create client</DialogTitle>
+        <DialogTitle>Create invoice</DialogTitle>
         <DialogContent>
           <ClientForm onClose={handleClose} />
         </DialogContent>
