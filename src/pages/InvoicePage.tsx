@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
-import { ClientForm } from "../components/ClientForm";
 import { useState } from "react";
 import { PlusIcon } from "@phosphor-icons/react";
 import { InvoiceTable } from "../components/InvoiceTable";
+import { InvoiceForm } from "../components/InvoiceForm";
 
 export function InvoicePage() {
   const [open, setOpen] = useState(false);
@@ -31,7 +31,7 @@ export function InvoicePage() {
       <Dialog open={open}>
         <DialogTitle>Create invoice</DialogTitle>
         <DialogContent>
-          <ClientForm onClose={handleClose} />
+          <InvoiceForm onClose={handleClose} />
         </DialogContent>
       </Dialog>
     </Stack>

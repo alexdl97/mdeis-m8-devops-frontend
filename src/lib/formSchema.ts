@@ -9,3 +9,11 @@ export const clientSchema = z.object({
 });
 
 export type ClientFormData = z.infer<typeof clientSchema>;
+
+export const invoiceSchema = z.object({
+    client: z.string().min(1, 'Client is required'),
+    total: z.number().min(1, 'There are no products selected'),
+    paymentCondition: z.string().min(1, 'Payment condition is required')
+});
+
+export type InvoiceFormData = z.infer<typeof invoiceSchema>;

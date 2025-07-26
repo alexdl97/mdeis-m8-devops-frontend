@@ -39,16 +39,6 @@ export function ClientForm(props: any) {
 
     return (
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-            {/* <Card variant="outlined"> */}
-            {/* <CardHeader
-                    title="Create client"
-                    subheader="Enter the client data"
-                    sx={{
-                        textAlign: "start"
-                    }}
-                />
-                <Divider /> */}
-            {/* <CardContent> */}
             <Grid container spacing={1}>
 
                 <Grid size={{ xs: 12 }}>
