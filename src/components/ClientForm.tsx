@@ -3,19 +3,24 @@ import { clientSchema, type ClientFormData } from "../lib/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, DialogActions, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
-import { fetchDocumentTypes, type DocumentTypeOption } from "../lib/api";
+import { fetchDocumentTypes } from "../lib/api";
+import type { DocumentType } from "../types/DocumentType";
+
+interface ClientForm {
+    onClose: () => void
+}
 
 
 // TODO: Add Props class    
-export function ClientForm(props: any) {
+export function ClientForm(props: ClientForm) {
     const { onClose } = props;
-
+    
     const { register, handleSubmit, control, formState: { errors } } = useForm<ClientFormData>({
         resolver: zodResolver(clientSchema)
     });
 
     const [loading, setLoading] = useState<boolean>(true);
-    const [documentTypes, setDocumentTypes] = useState<DocumentTypeOption[]>();
+    const [documentTypes, setDocumentTypes] = useState<DocumentType[]>();
 
     useEffect(() => {
         fetchDocumentTypes()
@@ -84,7 +89,7 @@ export function ClientForm(props: any) {
                         <Controller
                             control={control}
                             name="documentType"
-                            defaultValue=""
+                            defaultValue={0}
                             render={({ field }) => (
                                 <Select
                                     labelId="documentTypeLabel"
@@ -92,9 +97,9 @@ export function ClientForm(props: any) {
                                     {...field}
                                     disabled={loading}
                                 >
-                                    <MenuItem value=""><em>Select...</em></MenuItem>
+                                    <MenuItem value={0}><em>Select...</em></MenuItem>
                                     {documentTypes?.map(dt => (
-                                        <MenuItem value={dt.code}>{dt.name}</MenuItem>
+                                        <MenuItem value={dt.id}>{dt.name}</MenuItem>
                                     ))}
 
                                 </Select>

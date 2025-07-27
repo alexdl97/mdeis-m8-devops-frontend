@@ -1,18 +1,10 @@
-import { Box, Card, Divider, Table, TableBody, TableCell, TableHead, TablePagination, TableRow } from "@mui/material";
+import { Box, Card, Divider, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, Typography } from "@mui/material";
 import { useState } from "react";
+import type { Client } from "../types/Client";
 
 function noop(): void {
     // do nothing
 }
-
-export interface Client {
-    id: number,
-    name: string,
-    documentNumber: number,
-    documentType: string,
-    email: string,
-}
-
 interface ClientTableProps {
     count?: number;
     page?: number;
@@ -20,11 +12,8 @@ interface ClientTableProps {
     rowsPerPage?: number;
 }
 
-export function ClientTable(
-    { count = 0, rows = [], page = 0 }: ClientTableProps
-): React.JSX.Element {
-
-
+export function ClientTable(props: ClientTableProps): React.JSX.Element {
+    const { count = 0, rows = [], page = 0 } = props;
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     return (
@@ -41,27 +30,22 @@ export function ClientTable(
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
-                            <TableCell> CL0001 </TableCell>
-                            <TableCell> Genaro Alvarez </TableCell>
-                            <TableCell> genaruto@gmail.com </TableCell>
-                            <TableCell> CI </TableCell>
-                            <TableCell> 10001010 </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell> CL0001 </TableCell>
-                            <TableCell> Genaro Alvarez </TableCell>
-                            <TableCell> genaruto@gmail.com </TableCell>
-                            <TableCell> CI </TableCell>
-                            <TableCell> 10001010 </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell> CL0001 </TableCell>
-                            <TableCell> Genaro Alvarez </TableCell>
-                            <TableCell> genaruto@gmail.com </TableCell>
-                            <TableCell> CI </TableCell>
-                            <TableCell> 10001010 </TableCell>
-                        </TableRow>
+                        {rows.length === 0
+                            ? (<TableRow sx={{ textAlign: "center" }}>
+                                <TableCell colSpan={5} align="center">
+                                    Client list is empty
+                                </TableCell>
+                            </TableRow>)
+                            : null}
+                        {rows.map(client => (
+                            <TableRow key={client.id}>
+                                <TableCell> {client.code} </TableCell>
+                                <TableCell> {client.name} </TableCell>
+                                <TableCell> {client.email} </TableCell>
+                                <TableCell> {client.documentType.name} </TableCell>
+                                <TableCell> {client.documentNumber} </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </Box>

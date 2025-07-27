@@ -1,19 +1,23 @@
-import { Button, DialogActions, Divider, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Button, DialogActions, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, ListItem, ListItemButton, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { type InvoiceFormData, invoiceSchema } from "../lib/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Client } from "./ClientTable";
-import { fetchClients, fetchPaymentConditions, type PaymentCondition } from "../lib/api";
+import { fetchClients, fetchPaymentConditions } from "../lib/api";
+import type { Client } from "../types/Client";
+import type { PaymentCondition } from "../types/PaymentCondition";
+import { InvoiceLineForm } from "./InvoiceLineForm";
+import type { InvoiceDetail } from "../types/InvoiceDetail";
+import { TrashIcon } from "@phosphor-icons/react";
 
 export function InvoiceForm(props: any): React.JSX.Element {
     const { onClose } = props;
 
     const [loading, setLoading] = useState(true);
     const [clients, setClients] = useState<Client[]>([]);
-    const [products, setProducts] = useState([]);
     const [paymentConditions, setPaymentConditions] = useState<PaymentCondition[]>([]);
+    const [invoiceDetails, setInvoiceDetails] = useState<InvoiceDetail[]>([]);
 
     useEffect(() => {
         fetchClients()
@@ -28,7 +32,7 @@ export function InvoiceForm(props: any): React.JSX.Element {
 
     }, []);
 
-    const { register, handleSubmit, control, formState: { errors } } = useForm<InvoiceFormData>({
+    const { register, handleSubmit, control, formState: { errors }, setValue, getValues } = useForm<InvoiceFormData>({
         resolver: zodResolver(invoiceSchema),
         defaultValues: {
             total: 0
@@ -44,9 +48,27 @@ export function InvoiceForm(props: any): React.JSX.Element {
         onClose();
     }
 
+    const handleProductAdd = (data: InvoiceDetail) => {
+        const lines = [...invoiceDetails, data];
+        setInvoiceDetails(lines)
+        updateTotal(lines)
+    }
+
+    const handleProductDelete = (index: number) => {
+        const lines = [...invoiceDetails]
+        lines.splice(index, 1);
+        setInvoiceDetails(lines)
+        updateTotal(lines)
+    }
+
+    const updateTotal = (lines: InvoiceDetail[]) => {
+        const total = lines.reduce((ac, a) => a.subtotal + ac, 0);
+        setValue("total", total);
+    }
+
     return (
-        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-            <Grid container spacing={1}>
+        <Box >
+            <Grid component="form" onSubmit={handleSubmit(onSubmit)} noValidate id="invoiceForm" container spacing={1}>
                 <Grid size={{ xs: 12 }}>
                     <FormControl fullWidth required margin="dense" size="small"
                         error={!!errors.client} >
@@ -76,7 +98,7 @@ export function InvoiceForm(props: any): React.JSX.Element {
                 <Grid size={{ xs: 12 }}>
                     <FormControl fullWidth required margin="dense" size="small"
                         error={!!errors.paymentCondition} >
-                        <InputLabel id="paymentConditionLabel">Payment Condition</InputLabel>
+                        <InputLabel id="paymentConditionLabel">Payment condition</InputLabel>
                         <Controller
                             control={control}
                             name="paymentCondition"
@@ -84,7 +106,7 @@ export function InvoiceForm(props: any): React.JSX.Element {
                             render={({ field }) => (
                                 <Select
                                     labelId="paymentConditionLabel"
-                                    label="Payment Condition"
+                                    label="Payment condition"
                                     {...field}
                                     disabled={loading}
                                 >
@@ -112,27 +134,30 @@ export function InvoiceForm(props: any): React.JSX.Element {
                         disabled
                     />
                 </Grid>
-
-                <Grid size={{ xs: 12 }}>
-                    <Divider sx={{ marginBottom: 1 }} />
-
-                    <Typography variant="h6" >
-                        Producto
-                    </Typography>
-
-
-                    <Divider sx={{ marginBottom: 1, marginTop: 1 }} />
-
-                    <Typography variant="h6" >
-                        Detalle de factura
-                    </Typography>
-
-                </Grid>
             </Grid>
+            <Divider sx={{ marginY: 2 }} />
+            <InvoiceLineForm onProductAdd={handleProductAdd} />
+            <Divider sx={{ marginY: 2 }} />
+
+            <Typography variant="h6" marginBottom={2}>
+                Invoice lines
+            </Typography>
+            {invoiceDetails.map((line, index) => (
+                <ListItem key={index}>
+                    <ListItemText
+                        primary={`${line.product.code} - ${line.product.name}`}
+                        secondary={`${line.quantity.toFixed(2)} × Bs. ${line.price.toFixed(2)} = Bs. ${line.subtotal.toFixed(2)}`}
+                    />
+                    <IconButton edge="end" aria-label="delete" onClick={() => handleProductDelete(index)} >
+                        <TrashIcon />
+                    </IconButton>
+                </ListItem>
+            ))}
+
             <DialogActions sx={{ justifyContent: 'flex-end' }}>
                 <Button variant="text" onClick={handleClose}> Close </Button>
-                <Button variant="contained" type="submit">Save invoice</Button>
+                <Button variant="contained" type="submit" form="invoiceForm">Save invoice</Button>
             </DialogActions>
-        </Box>
+        </Box >
     )
 }
