@@ -1,24 +1,24 @@
 
-import { Button, DialogActions, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, ListItem, ListItemButton, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { type InvoiceFormData, invoiceSchema } from "../lib/formSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { fetchClients, fetchPaymentConditions, saveInvoice } from "../lib/api";
-import type { Client } from "../types/Client";
-import type { PaymentCondition } from "../types/PaymentCondition";
-import { InvoiceLineForm } from "./InvoiceLineForm";
-import type { InvoiceDetail } from "../types/InvoiceDetail";
-import { TrashIcon } from "@phosphor-icons/react";
+import { Button, DialogActions, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, ListItem, ListItemButton, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Typography } from "@mui/material"
+import Box from "@mui/material/Box"
+import { useEffect, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import { type InvoiceFormData, invoiceSchema } from "../lib/formSchema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { fetchClients, fetchPaymentConditions, saveInvoice } from "../lib/api"
+import type { Client } from "../types/Client"
+import type { PaymentCondition } from "../types/PaymentCondition"
+import { InvoiceLineForm } from "./InvoiceLineForm"
+import type { InvoiceDetail } from "../types/InvoiceDetail"
+import { TrashIcon } from "@phosphor-icons/react"
 
 export function InvoiceForm(props: any): React.JSX.Element {
-    const { onClose } = props;
+    const { onClose } = props
 
-    const [loading, setLoading] = useState(true);
-    const [clients, setClients] = useState<Client[]>([]);
-    const [paymentConditions, setPaymentConditions] = useState<PaymentCondition[]>([]);
-    const [invoiceDetails, setInvoiceDetails] = useState<InvoiceDetail[]>([]);
+    const [loading, setLoading] = useState(true)
+    const [clients, setClients] = useState<Client[]>([])
+    const [paymentConditions, setPaymentConditions] = useState<PaymentCondition[]>([])
+    const [invoiceDetails, setInvoiceDetails] = useState<InvoiceDetail[]>([])
 
     useEffect(() => {
         fetchClients()
@@ -31,7 +31,7 @@ export function InvoiceForm(props: any): React.JSX.Element {
             .catch(() => setPaymentConditions([]))
             .finally(() => setLoading(false))
 
-    }, []);
+    }, [])
 
     const { register, handleSubmit, control, formState: { errors }, setValue, getValues } = useForm<InvoiceFormData>({
         resolver: zodResolver(invoiceSchema),
@@ -41,37 +41,35 @@ export function InvoiceForm(props: any): React.JSX.Element {
     })
 
     const handleClose = () => {
-        onClose();
+        onClose()
     }
 
     const onSubmit = (data: InvoiceFormData) => {
-        console.log("Submitted", data);
         const body = {
             ...data,
             invoiceDetails: invoiceDetails.map(id => ({ ...id, productId: id.product.id }))
-        };
-        console.log(body);
+        }
 
         saveInvoice(body)
             .then(onClose)
     }
 
     const handleProductAdd = (data: InvoiceDetail) => {
-        const lines = [...invoiceDetails, data];
+        const lines = [...invoiceDetails, data]
         setInvoiceDetails(lines)
         updateTotal(lines)
     }
 
     const handleProductDelete = (index: number) => {
         const lines = [...invoiceDetails]
-        lines.splice(index, 1);
+        lines.splice(index, 1)
         setInvoiceDetails(lines)
         updateTotal(lines)
     }
 
     const updateTotal = (lines: InvoiceDetail[]) => {
-        const total = lines.reduce((ac, a) => a.subtotal + ac, 0);
-        setValue("total", total);
+        const total = lines.reduce((ac, a) => a.subtotal + ac, 0)
+        setValue("total", total)
     }
 
     return (
@@ -80,7 +78,7 @@ export function InvoiceForm(props: any): React.JSX.Element {
                 <Grid size={{ xs: 12 }}>
                     <FormControl fullWidth required margin="dense" size="small"
                         error={!!errors.clientId} >
-                        <InputLabel id="clientLabel">Client</InputLabel>
+                        <InputLabel id="clientLabel">Cliente</InputLabel>
                         <Controller
                             control={control}
                             name="clientId"
@@ -88,13 +86,13 @@ export function InvoiceForm(props: any): React.JSX.Element {
                             render={({ field }) => (
                                 <Select
                                     labelId="clientLabel"
-                                    label="Client"
+                                    label="Cliente"
                                     {...field}
                                     disabled={loading}
                                 >
-                                    <MenuItem value={0}><em>Select...</em></MenuItem>
+                                    <MenuItem value={0}><em>Seleccionar...</em></MenuItem>
                                     {clients?.map(dt => (
-                                        <MenuItem value={dt.id}>{dt.name}</MenuItem>
+                                        <MenuItem value={dt.id}>{dt.code} - {dt.name}</MenuItem>
                                     ))}
 
                                 </Select>
@@ -106,7 +104,7 @@ export function InvoiceForm(props: any): React.JSX.Element {
                 <Grid size={{ xs: 12 }}>
                     <FormControl fullWidth required margin="dense" size="small"
                         error={!!errors.paymentConditionId} >
-                        <InputLabel id="paymentConditionLabel">Payment condition</InputLabel>
+                        <InputLabel id="paymentConditionLabel">Condición de pago</InputLabel>
                         <Controller
                             control={control}
                             name="paymentConditionId"
@@ -114,11 +112,11 @@ export function InvoiceForm(props: any): React.JSX.Element {
                             render={({ field }) => (
                                 <Select
                                     labelId="paymentConditionLabel"
-                                    label="Payment condition"
+                                    label="Condición de pago"
                                     {...field}
                                     disabled={loading}
                                 >
-                                    <MenuItem value={0}><em>Select...</em></MenuItem>
+                                    <MenuItem value={0}><em>Seleccionar...</em></MenuItem>
                                     {paymentConditions?.map(dt => (
                                         <MenuItem value={dt.id}>{dt.name}</MenuItem>
                                     ))}
@@ -148,9 +146,9 @@ export function InvoiceForm(props: any): React.JSX.Element {
             <Divider sx={{ marginY: 2 }} />
 
             <Typography variant="h6" marginBottom={2}>
-                Invoice lines
+                Detalle de factura
             </Typography>
-            {invoiceDetails.length === 0 ? <Box>Invoice details is empty</Box> : null}
+            {invoiceDetails.length === 0 ? <Box>Detalle de factura vacío</Box> : null}
             {invoiceDetails.map((line, index) => (
                 <ListItem key={index}>
                     <ListItemText
@@ -164,8 +162,8 @@ export function InvoiceForm(props: any): React.JSX.Element {
             ))}
 
             <DialogActions sx={{ justifyContent: 'flex-end' }}>
-                <Button variant="text" onClick={handleClose}> Close </Button>
-                <Button variant="contained" type="submit" form="invoiceForm">Save invoice</Button>
+                <Button variant="text" onClick={handleClose}> Cerrar </Button>
+                <Button variant="contained" type="submit" form="invoiceForm">Guardar</Button>
             </DialogActions>
         </Box >
     )

@@ -1,22 +1,15 @@
-import { Card, Box, Table, TableHead, TableRow, TableCell, TableBody, Divider, TablePagination } from "@mui/material";
-import { useState } from "react";
-import type { Invoice } from "../types/Invoice";
-
-function noop(): void {
-    // do nothing
-}
+import { Card, Box, Table, TableHead, TableRow, TableCell, TableBody, Divider, TablePagination } from "@mui/material"
+import type { Invoice } from "../types/Invoice"
 
 interface InvoiceTableProps {
-    count?: number;
-    page?: number;
+    count?: number
+    page?: number
     rows?: Invoice[],
-    rowsPerPage?: number;
+    rowsPerPage?: number
 }
 
 export function InvoiceTable(props: InvoiceTableProps): React.JSX.Element {
-    const { count = 0, rows = [], page = 0 } = props;
-
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const { count = 0, rows = [], page = 0 } = props
 
     return (
         <Card>
@@ -25,8 +18,8 @@ export function InvoiceTable(props: InvoiceTableProps): React.JSX.Element {
                     <TableHead>
                         <TableRow>
                             <TableCell> ID </TableCell>
-                            <TableCell> Client </TableCell>
-                            <TableCell> Payment condition </TableCell>
+                            <TableCell> Cliente </TableCell>
+                            <TableCell> Condición de pago </TableCell>
                             <TableCell align="right"> Total (Bs.) </TableCell>
                         </TableRow>
                     </TableHead>
@@ -34,7 +27,7 @@ export function InvoiceTable(props: InvoiceTableProps): React.JSX.Element {
                         {rows.length === 0
                             ? (<TableRow sx={{ textAlign: "center" }}>
                                 <TableCell colSpan={5} align="center">
-                                    Invoice list is empty
+                                    Lista de facturas vacía
                                 </TableCell>
                             </TableRow>)
                             : null}
@@ -49,16 +42,6 @@ export function InvoiceTable(props: InvoiceTableProps): React.JSX.Element {
                     </TableBody>
                 </Table>
             </Box>
-            <Divider />
-            <TablePagination
-                component="div"
-                count={count}
-                onPageChange={noop}
-                onRowsPerPageChange={noop}
-                page={page}
-                rowsPerPage={rowsPerPage}
-                rowsPerPageOptions={[5, 10, 25]}
-            />
         </Card>
     )
 }

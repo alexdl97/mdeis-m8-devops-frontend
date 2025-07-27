@@ -1,15 +1,15 @@
-import type React from "react";
-import { Box, Divider, Drawer, Stack, Typography } from "@mui/material";
-import { useLocation } from "react-router-dom";
-import { NavItem } from "./NavItem";
+import type React from "react"
+import { Box, Divider, Drawer, Stack, Typography } from "@mui/material"
+import { useLocation } from "react-router-dom"
+import { NavItem } from "./NavItem"
 
 export interface MobileNavProps {
-    onClose?: () => void;
-    open?: boolean;
+    onClose?: () => void
+    open?: boolean
 }
 
 export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element {
-    const location = useLocation();
+    const location = useLocation()
 
     return (
         <Drawer
@@ -62,8 +62,8 @@ export function MobileNav({ open, onClose }: MobileNavProps): React.JSX.Element 
             <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
             <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
                 <Stack component="ul" spacing={1} sx={{ listStyle: 'none', m: 0, p: 0 }}>
-                    <NavItem title="Clients" path="clients" key="clients" icon="users" location={location} />
-                    <NavItem title="Invoices" path="invoices" key="invoices" icon="invoice" location={location} />
+                    <NavItem title="Clientes" path="clients" key="clients" icon="users" location={location} />
+                    <NavItem title="Factura de ventas" path="invoices" key="invoices" icon="invoice" location={location} />
                 </Stack>
             </Box>
         </Drawer>

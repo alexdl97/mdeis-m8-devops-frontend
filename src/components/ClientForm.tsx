@@ -1,10 +1,10 @@
-import { Controller, useForm } from "react-hook-form";
-import { clientSchema, type ClientFormData } from "../lib/formSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Button, DialogActions, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material";
-import { useEffect, useState } from "react";
-import { fetchDocumentTypes, saveClient } from "../lib/api";
-import type { DocumentType } from "../types/DocumentType";
+import { Controller, useForm } from "react-hook-form"
+import { clientSchema, type ClientFormData } from "../lib/formSchema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Box, Button, DialogActions, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material"
+import { useEffect, useState } from "react"
+import { fetchDocumentTypes, saveClient } from "../lib/api"
+import type { DocumentType } from "../types/DocumentType"
 
 interface ClientForm {
     onClose: () => void
@@ -13,28 +13,28 @@ interface ClientForm {
 
 // TODO: Add Props class    
 export function ClientForm(props: ClientForm) {
-    const { onClose } = props;
+    const { onClose } = props
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<ClientFormData>({
         resolver: zodResolver(clientSchema)
-    });
+    })
 
-    const [loading, setLoading] = useState<boolean>(true);
-    const [documentTypes, setDocumentTypes] = useState<DocumentType[]>();
+    const [loading, setLoading] = useState<boolean>(true)
+    const [documentTypes, setDocumentTypes] = useState<DocumentType[]>()
 
     useEffect(() => {
         fetchDocumentTypes()
             .then(setDocumentTypes)
             .catch(() => setDocumentTypes([]))
-            .finally(() => setLoading(false));
-    }, []);
+            .finally(() => setLoading(false))
+    }, [])
 
     const handleClose = () => {
-        onClose();
+        onClose()
     }
 
     const onSubmit = (data: ClientFormData) => {
-        console.log("Submitted", data);
+        console.log("Submitted", data)
         saveClient(data)
             .then(onClose)
     }
@@ -46,7 +46,7 @@ export function ClientForm(props: ClientForm) {
                 <Grid size={{ xs: 12 }}>
                     <TextField
                         fullWidth
-                        label="Code"
+                        label="Código"
                         margin="dense"
                         size="small"
                         {...register("code")}
@@ -58,7 +58,7 @@ export function ClientForm(props: ClientForm) {
                 <Grid size={{ xs: 12 }}>
                     <TextField
                         fullWidth
-                        label="Name"
+                        label="Nombre"
                         margin="dense"
                         size="small"
                         {...register("name")}
@@ -70,7 +70,7 @@ export function ClientForm(props: ClientForm) {
                 <Grid size={{ xs: 12, md: 6 }}>
                     <TextField
                         fullWidth
-                        label="Document number"
+                        label="Nro. CI/NIT"
                         margin="dense"
                         size="small"
                         {...register("documentNumber")}
@@ -82,7 +82,7 @@ export function ClientForm(props: ClientForm) {
                 <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth required margin="dense" size="small"
                         error={!!errors.documentTypeId}>
-                        <InputLabel id="documentTypeLabel">Document type</InputLabel>
+                        <InputLabel id="documentTypeLabel">Tipo documento</InputLabel>
                         <Controller
                             control={control}
                             name="documentTypeId"
@@ -90,7 +90,7 @@ export function ClientForm(props: ClientForm) {
                             render={({ field }) => (
                                 <Select
                                     labelId="documentTypeLabel"
-                                    label="Document type"
+                                    label="Tipo documento"
                                     {...field}
                                     disabled={loading}
                                 >
@@ -120,9 +120,9 @@ export function ClientForm(props: ClientForm) {
 
             </Grid>
             <DialogActions sx={{ justifyContent: 'flex-end' }}>
-                <Button variant="text" onClick={handleClose}> Close </Button>
-                <Button variant="contained" type="submit">Save client</Button>
+                <Button variant="text" onClick={handleClose}> Cerrar </Button>
+                <Button variant="contained" type="submit">Guardar</Button>
             </DialogActions>
         </Box>
-    );
+    )
 }
