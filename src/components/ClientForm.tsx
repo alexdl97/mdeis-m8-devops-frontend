@@ -5,6 +5,7 @@ import { Box, Button, DialogActions, FormControl, FormHelperText, Grid, InputLab
 import { useEffect, useState } from "react"
 import { fetchDocumentTypes, saveClient } from "../lib/api"
 import type { DocumentType } from "../types/DocumentType"
+import { useSnackbar } from "notistack"
 
 interface ClientForm {
     onClose: () => void
@@ -14,6 +15,7 @@ interface ClientForm {
 // TODO: Add Props class    
 export function ClientForm(props: ClientForm) {
     const { onClose } = props
+    const { enqueueSnackbar } = useSnackbar()
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<ClientFormData>({
         resolver: zodResolver(clientSchema)
@@ -34,9 +36,16 @@ export function ClientForm(props: ClientForm) {
     }
 
     const onSubmit = (data: ClientFormData) => {
-        console.log("Submitted", data)
         saveClient(data)
-            .then(onClose)
+            .then(() => {
+                onClose()
+                enqueueSnackbar('Cliente ha sido registrado exitosamente', {
+                    variant: 'success'
+                })
+            })
+            .catch(() => enqueueSnackbar("Hubo un error al registrar el cliente", {
+                variant: 'error'
+            }))
     }
 
     return (
@@ -94,7 +103,7 @@ export function ClientForm(props: ClientForm) {
                                     {...field}
                                     disabled={loading}
                                 >
-                                    <MenuItem value={0}><em>Select...</em></MenuItem>
+                                    <MenuItem value={0}><em>Seleccionar...</em></MenuItem>
                                     {documentTypes?.map(dt => (
                                         <MenuItem value={dt.id}>{dt.name}</MenuItem>
                                     ))}

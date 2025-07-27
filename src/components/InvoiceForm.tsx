@@ -11,9 +11,11 @@ import type { PaymentCondition } from "../types/PaymentCondition"
 import { InvoiceLineForm } from "./InvoiceLineForm"
 import type { InvoiceDetail } from "../types/InvoiceDetail"
 import { TrashIcon } from "@phosphor-icons/react"
+import { useSnackbar } from "notistack"
 
 export function InvoiceForm(props: any): React.JSX.Element {
     const { onClose } = props
+    const { enqueueSnackbar } = useSnackbar()
 
     const [loading, setLoading] = useState(true)
     const [clients, setClients] = useState<Client[]>([])
@@ -51,7 +53,15 @@ export function InvoiceForm(props: any): React.JSX.Element {
         }
 
         saveInvoice(body)
-            .then(onClose)
+            .then(() => {
+                enqueueSnackbar('Factura de venta ha sido registrado exitosamente', {
+                    variant: 'success'
+                })
+                onClose()
+            })
+            .catch(() => enqueueSnackbar("Hubo un error al registrar la factura", {
+                variant: 'error'
+            }))
     }
 
     const handleProductAdd = (data: InvoiceDetail) => {
