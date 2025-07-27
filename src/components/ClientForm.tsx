@@ -3,7 +3,7 @@ import { clientSchema, type ClientFormData } from "../lib/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, DialogActions, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select, TextField, type SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
-import { fetchDocumentTypes } from "../lib/api";
+import { fetchDocumentTypes, saveClient } from "../lib/api";
 import type { DocumentType } from "../types/DocumentType";
 
 interface ClientForm {
@@ -14,7 +14,7 @@ interface ClientForm {
 // TODO: Add Props class    
 export function ClientForm(props: ClientForm) {
     const { onClose } = props;
-    
+
     const { register, handleSubmit, control, formState: { errors } } = useForm<ClientFormData>({
         resolver: zodResolver(clientSchema)
     });
@@ -29,17 +29,14 @@ export function ClientForm(props: ClientForm) {
             .finally(() => setLoading(false));
     }, []);
 
-    const onDocumentTypeChange = (event: SelectChangeEvent) => {
-        // setDocumentTypes(event.target.value);
-    }
-
     const handleClose = () => {
         onClose();
     }
 
     const onSubmit = (data: ClientFormData) => {
         console.log("Submitted", data);
-        onClose();
+        saveClient(data)
+            .then(onClose)
     }
 
     return (
@@ -84,11 +81,11 @@ export function ClientForm(props: ClientForm) {
 
                 <Grid size={{ xs: 12, md: 6 }}>
                     <FormControl fullWidth required margin="dense" size="small"
-                        error={!!errors.documentType}>
+                        error={!!errors.documentTypeId}>
                         <InputLabel id="documentTypeLabel">Document type</InputLabel>
                         <Controller
                             control={control}
-                            name="documentType"
+                            name="documentTypeId"
                             defaultValue={0}
                             render={({ field }) => (
                                 <Select
@@ -105,7 +102,7 @@ export function ClientForm(props: ClientForm) {
                                 </Select>
                             )}
                         />
-                        <FormHelperText> {errors.documentType?.message} </FormHelperText>
+                        <FormHelperText> {errors.documentTypeId?.message} </FormHelperText>
                     </FormControl>
                 </Grid>
 

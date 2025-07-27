@@ -1,11 +1,26 @@
 import { Button, Dialog, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlusIcon } from "@phosphor-icons/react";
 import { InvoiceTable } from "../components/InvoiceTable";
 import { InvoiceForm } from "../components/InvoiceForm";
+import type { Invoice } from "../types/Invoice";
+import { fetchInvoices } from "../lib/api";
 
 export function InvoicePage() {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+
+  useEffect(() => {
+    getInvoices();
+  }, [])
+
+  const getInvoices = () => {
+    fetchInvoices()
+      .then(setInvoices)
+      .catch(() => setInvoices([]))
+      .finally(() => setLoading(false))
+  }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -13,6 +28,7 @@ export function InvoicePage() {
 
   const handleClose = () => {
     setOpen(false);
+    getInvoices();
   }
 
   return (
@@ -27,8 +43,8 @@ export function InvoicePage() {
           </Button>
         </div>
       </Stack>
-      <InvoiceTable rowsPerPage={5} />
-      <Dialog open={open}>
+      <InvoiceTable rowsPerPage={5} rows={invoices} />
+      <Dialog open={open} >
         <DialogTitle>Create invoice</DialogTitle>
         <DialogContent>
           <InvoiceForm onClose={handleClose} />

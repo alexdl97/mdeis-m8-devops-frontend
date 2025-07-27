@@ -25,20 +25,15 @@ export function InvoiceLineForm(props: any): React.JSX.Element {
     })
 
     const onSubmit = (data: InvoiceLineFormData) => {
-        console.log("Submitted", data);
-        // onClose();
-        const product = products.find(p => p.id === data.product)!;
+        const product = products.find(p => p.id === data.productId)!;
         const invoiceDetail: InvoiceDetail = {
             price: product.price,
             quantity: data.quantity,
             subtotal: product.price * data.quantity,
             product: product
         }
-
-        console.log(invoiceDetail);
         onProductAdd(invoiceDetail);
         reset();
-        // reset({ product: 0, quantity: undefined }, { keepDefaultValues: true });
     }
 
     return (
@@ -50,11 +45,11 @@ export function InvoiceLineForm(props: any): React.JSX.Element {
 
                 <Grid size={{ xs: 12, sm: 9 }}>
                     <FormControl fullWidth required margin="dense" size="small"
-                        error={!!errors.product} >
+                        error={!!errors.productId} >
                         <InputLabel id="productLabel">Product</InputLabel>
                         <Controller
                             control={control}
-                            name="product"
+                            name="productId"
                             defaultValue={0}
                             render={({ field }) => (
                                 <Select
@@ -71,7 +66,7 @@ export function InvoiceLineForm(props: any): React.JSX.Element {
                                 </Select>
                             )}
                         />
-                        <FormHelperText> {errors.product?.message} </FormHelperText>
+                        <FormHelperText> {errors.productId?.message} </FormHelperText>
                     </FormControl>
                 </Grid>
 

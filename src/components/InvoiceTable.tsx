@@ -1,12 +1,9 @@
 import { Card, Box, Table, TableHead, TableRow, TableCell, TableBody, Divider, TablePagination } from "@mui/material";
 import { useState } from "react";
+import type { Invoice } from "../types/Invoice";
 
 function noop(): void {
     // do nothing
-}
-
-interface Invoice {
-
 }
 
 interface InvoiceTableProps {
@@ -16,9 +13,9 @@ interface InvoiceTableProps {
     rowsPerPage?: number;
 }
 
-export function InvoiceTable(
-    { count = 0, rows = [], page = 0 }: InvoiceTableProps
-): React.JSX.Element {
+export function InvoiceTable(props: InvoiceTableProps): React.JSX.Element {
+    const { count = 0, rows = [], page = 0 } = props;
+
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
     return (
@@ -30,28 +27,25 @@ export function InvoiceTable(
                             <TableCell> ID </TableCell>
                             <TableCell> Client </TableCell>
                             <TableCell> Payment condition </TableCell>
-                            <TableCell> Total (Bs.) </TableCell>
+                            <TableCell align="right"> Total (Bs.) </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        <TableRow>
-                            <TableCell> 1 </TableCell>
-                            <TableCell> Genaro Alvarez </TableCell>
-                            <TableCell> Cash on delivery </TableCell>
-                            <TableCell sx={{ textAlign: "end" }}> 1500.00 </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell> 2 </TableCell>
-                            <TableCell> Pedro Gutierrez </TableCell>
-                            <TableCell> Cash on delivery </TableCell>
-                            <TableCell sx={{ textAlign: "end" }}> 1500.00 </TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell> 3 </TableCell>
-                            <TableCell> Genaro Alvarez </TableCell>
-                            <TableCell> Cash on delivery </TableCell>
-                            <TableCell sx={{ textAlign: "end" }}> 1500.00 </TableCell>
-                        </TableRow>
+                        {rows.length === 0
+                            ? (<TableRow sx={{ textAlign: "center" }}>
+                                <TableCell colSpan={5} align="center">
+                                    Invoice list is empty
+                                </TableCell>
+                            </TableRow>)
+                            : null}
+                        {rows.map(invoice => (
+                            <TableRow key={invoice.id}>
+                                <TableCell> {invoice.client.id} </TableCell>
+                                <TableCell> {invoice.client.name} </TableCell>
+                                <TableCell> {invoice.paymentCondition.name} </TableCell>
+                                <TableCell align="right"> {invoice.total.toFixed(2)} </TableCell>
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </Box>

@@ -1,10 +1,11 @@
+
 import { Button, DialogActions, Divider, FormControl, FormHelperText, Grid, IconButton, InputLabel, ListItem, ListItemButton, ListItemSecondaryAction, ListItemText, MenuItem, Select, TextField, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { type InvoiceFormData, invoiceSchema } from "../lib/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { fetchClients, fetchPaymentConditions } from "../lib/api";
+import { fetchClients, fetchPaymentConditions, saveInvoice } from "../lib/api";
 import type { Client } from "../types/Client";
 import type { PaymentCondition } from "../types/PaymentCondition";
 import { InvoiceLineForm } from "./InvoiceLineForm";
@@ -45,7 +46,14 @@ export function InvoiceForm(props: any): React.JSX.Element {
 
     const onSubmit = (data: InvoiceFormData) => {
         console.log("Submitted", data);
-        onClose();
+        const body = {
+            ...data,
+            invoiceDetails: invoiceDetails.map(id => ({ ...id, productId: id.product.id }))
+        };
+        console.log(body);
+
+        saveInvoice(body)
+            .then(onClose)
     }
 
     const handleProductAdd = (data: InvoiceDetail) => {
@@ -71,12 +79,12 @@ export function InvoiceForm(props: any): React.JSX.Element {
             <Grid component="form" onSubmit={handleSubmit(onSubmit)} noValidate id="invoiceForm" container spacing={1}>
                 <Grid size={{ xs: 12 }}>
                     <FormControl fullWidth required margin="dense" size="small"
-                        error={!!errors.client} >
+                        error={!!errors.clientId} >
                         <InputLabel id="clientLabel">Client</InputLabel>
                         <Controller
                             control={control}
-                            name="client"
-                            defaultValue=""
+                            name="clientId"
+                            defaultValue={0}
                             render={({ field }) => (
                                 <Select
                                     labelId="clientLabel"
@@ -84,7 +92,7 @@ export function InvoiceForm(props: any): React.JSX.Element {
                                     {...field}
                                     disabled={loading}
                                 >
-                                    <MenuItem value=""><em>Select...</em></MenuItem>
+                                    <MenuItem value={0}><em>Select...</em></MenuItem>
                                     {clients?.map(dt => (
                                         <MenuItem value={dt.id}>{dt.name}</MenuItem>
                                     ))}
@@ -92,17 +100,17 @@ export function InvoiceForm(props: any): React.JSX.Element {
                                 </Select>
                             )}
                         />
-                        <FormHelperText> {errors.client?.message} </FormHelperText>
+                        <FormHelperText> {errors.clientId?.message} </FormHelperText>
                     </FormControl>
                 </Grid>
                 <Grid size={{ xs: 12 }}>
                     <FormControl fullWidth required margin="dense" size="small"
-                        error={!!errors.paymentCondition} >
+                        error={!!errors.paymentConditionId} >
                         <InputLabel id="paymentConditionLabel">Payment condition</InputLabel>
                         <Controller
                             control={control}
-                            name="paymentCondition"
-                            defaultValue=""
+                            name="paymentConditionId"
+                            defaultValue={0}
                             render={({ field }) => (
                                 <Select
                                     labelId="paymentConditionLabel"
@@ -110,15 +118,15 @@ export function InvoiceForm(props: any): React.JSX.Element {
                                     {...field}
                                     disabled={loading}
                                 >
-                                    <MenuItem value=""><em>Select...</em></MenuItem>
+                                    <MenuItem value={0}><em>Select...</em></MenuItem>
                                     {paymentConditions?.map(dt => (
-                                        <MenuItem value={dt.code}>{dt.name}</MenuItem>
+                                        <MenuItem value={dt.id}>{dt.name}</MenuItem>
                                     ))}
 
                                 </Select>
                             )}
                         />
-                        <FormHelperText> {errors.paymentCondition?.message} </FormHelperText>
+                        <FormHelperText> {errors.paymentConditionId?.message} </FormHelperText>
                     </FormControl>
                 </Grid>
 
@@ -142,6 +150,7 @@ export function InvoiceForm(props: any): React.JSX.Element {
             <Typography variant="h6" marginBottom={2}>
                 Invoice lines
             </Typography>
+            {invoiceDetails.length === 0 ? <Box>Invoice details is empty</Box> : null}
             {invoiceDetails.map((line, index) => (
                 <ListItem key={index}>
                     <ListItemText
