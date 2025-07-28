@@ -38,7 +38,7 @@ export function ClientPage() {
           <Typography variant="h4">Clientes</Typography>
         </Stack>
         <div>
-          <Button startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained" onClick={handleClickOpen}>
+          <Button startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />} variant="contained" onClick={handleClickOpen} id="clientFormButton">
             Registrar cliente
           </Button>
         </div>
