@@ -13,7 +13,7 @@ export function Layout({ children }: LayoutProps): React.JSX.Element {
 
     return (
         <Box>
-            <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+            <SnackbarProvider maxSnack={3} autoHideDuration={10000} key={"snackbar"}>
                 <GlobalStyles
                     styles={{
                         body: {

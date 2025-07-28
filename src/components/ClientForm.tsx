@@ -40,7 +40,7 @@ export function ClientForm(props: ClientForm) {
             .then(() => {
                 onClose()
                 enqueueSnackbar('Cliente ha sido registrado exitosamente', {
-                    variant: 'success'
+                    variant: 'success',
                 })
             })
             .catch(() => enqueueSnackbar("Hubo un error al registrar el cliente", {
