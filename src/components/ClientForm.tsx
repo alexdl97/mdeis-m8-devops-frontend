@@ -54,6 +54,7 @@ export function ClientForm(props: ClientForm) {
 
                 <Grid size={{ xs: 12 }}>
                     <TextField
+                        id="code"
                         fullWidth
                         label="Código"
                         margin="dense"
@@ -66,6 +67,7 @@ export function ClientForm(props: ClientForm) {
 
                 <Grid size={{ xs: 12 }}>
                     <TextField
+                        id="name"
                         fullWidth
                         label="Nombre"
                         margin="dense"
@@ -78,6 +80,7 @@ export function ClientForm(props: ClientForm) {
 
                 <Grid size={{ xs: 12, md: 6 }}>
                     <TextField
+                        id="documentNumber"
                         fullWidth
                         label="Nro. CI/NIT"
                         margin="dense"
@@ -98,6 +101,7 @@ export function ClientForm(props: ClientForm) {
                             defaultValue={0}
                             render={({ field }) => (
                                 <Select
+                                    id="documentType"
                                     labelId="documentTypeLabel"
                                     label="Tipo documento"
                                     {...field}
@@ -117,6 +121,7 @@ export function ClientForm(props: ClientForm) {
 
                 <Grid size={{ xs: 12 }}>
                     <TextField
+                        id="email"
                         fullWidth
                         label="Email"
                         margin="dense"
@@ -130,7 +135,7 @@ export function ClientForm(props: ClientForm) {
             </Grid>
             <DialogActions sx={{ justifyContent: 'flex-end' }}>
                 <Button variant="text" onClick={handleClose}> Cerrar </Button>
-                <Button variant="contained" type="submit">Guardar</Button>
+                <Button variant="contained" type="submit" id="saveButton">Guardar</Button>
             </DialogActions>
         </Box>
     )
